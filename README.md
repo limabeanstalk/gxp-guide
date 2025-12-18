@@ -26,6 +26,7 @@ flowchart TD
     C --> D["Construct Prompt (LangChain)"]
     D --> E["Phi-3 Mini LLM"]
     E --> F["Answer with Sources"]
+```
 
 ```markdown
 ## 📚 Project Documentation
@@ -37,7 +38,7 @@ All validation and compliance documentation is organized in the [`docs/`](docs) 
 - [Validation Summary Report](docs/validation_summary.md)
 
 ## 📊 Documentation Flow
-
+```
 ```mermaid
 flowchart TD
     URS["User Requirements Specification"] --> FRS["Functional Requirements Specification"]
@@ -45,3 +46,4 @@ flowchart TD
     Risks --> TM["Traceability Matrix"]
     TM --> TP["Test Plan"]
     TP --> VSR["Validation Summary Report"]
+```
