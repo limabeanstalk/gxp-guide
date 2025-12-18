@@ -26,3 +26,11 @@ flowchart TD
     C --> D[Construct Prompt (LangChain)]
     D --> E[Phi-3 Mini LLM]
     E --> F[Answer with Sources]
+
+## 🛠️ Quick test
+
+```markdown
+```mermaid
+flowchart TD
+    A[Start] --> B[Do something]
+    B --> C[Finish]
