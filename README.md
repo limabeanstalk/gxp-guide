@@ -27,6 +27,7 @@ flowchart TD
     D --> E["Phi-3 Mini LLM"]
     E --> F["Answer with Sources"]
 
+```markdown
 ## 📚 Project Documentation
 
 All validation and compliance documentation is organized in the [`docs/`](docs) folder: - [User Requirements Specification (URS)](docs/urs.md) 
@@ -44,9 +45,3 @@ flowchart TD
     Risks --> TM["Traceability Matrix"]
     TM --> TP["Test Plan"]
     TP --> VSR["Validation Summary Report"]
-=======
-    A[User Query] --> B["Embed Query (BGE-small-en)"]
-    B --> C["Retrieve Top-k Chunks (ChromaDB)"]
-    C --> D["Construct Prompt (LangChain)"]
-    D --> E["Phi-3 Mini LLM"]
-    E --> F["Answer with Sources"]
