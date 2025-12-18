@@ -26,3 +26,21 @@ flowchart TD
     C --> D[Construct Prompt (LangChain)]
     D --> E[Phi-3 Mini LLM]
     E --> F[Answer with Sources]
+
+## 📚 Project Documentation
+
+All validation and compliance documentation is organized in the [`docs/`](docs) folder: - [User Requirements Specification (URS)](docs/urs.md) 
+- [Functional Requirements Specification (FRS)](docs/frs.md) 
+- [Risk Assessment](docs/risk_assessment.md) 
+- [Traceability Matrix](docs/traceability_matrix.md) - [Test Plan](docs/test_plan.md) 
+- [Validation Summary Report](docs/validation_summary.md)
+
+## 📊 Documentation Flow
+
+```mermaid
+flowchart TD
+    URS["User Requirements Specification"] --> FRS["Functional Requirements Specification"]
+    FRS --> Risks["Risk Assessment"]
+    Risks --> TM["Traceability Matrix"]
+    TM --> TP["Test Plan"]
+    TP --> VSR["Validation Summary Report"]
