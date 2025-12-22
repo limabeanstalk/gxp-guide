@@ -66,10 +66,17 @@ def build_context(chunks):
 # -----------------------------
 def generate_answer(question, context):
     prompt = f"""
-You are a helpful assistant answering questions about 21 CFR Part 11.
+You are an expert assistant specializing in FDA 21 CFR Part 11 and GxP compliance.
 
-Use ONLY the information in the CONTEXT to answer.
-If the answer is not in the context, say you do not know.
+Using ONLY the information provided in the CONTEXT, write a detailed and accurate answer to the QUESTION.
+If the answer is not contained in the context, say: "The context does not contain that information."
+
+Your answer must be:
+- specific
+- complete
+- written in full sentences
+- based strictly on the context
+- not generic or vague
 
 CONTEXT:
 {context}
