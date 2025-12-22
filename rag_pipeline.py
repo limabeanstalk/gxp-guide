@@ -16,7 +16,7 @@ embedder = SentenceTransformer("sentence-transformers/multi-qa-MiniLM-L6-cos-v1"
 # ----------------------------- 
 # # 1B. Load Reranker 
 # ----------------------------- 
-reranker = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-6-v2"
+reranker = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-6-v2")
 
 # -----------------------------
 # 2. Connect to MongoDB
