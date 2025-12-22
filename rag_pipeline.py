@@ -4,7 +4,7 @@ import numpy as np
 import os
 from pymongo import MongoClient
 from sentence_transformers import SentenceTransformer
-from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
 
 # -----------------------------
 # 1. Load Embedding Model
@@ -21,15 +21,15 @@ db = client["gxp-guide"]
 collection = db["chunks"] 
 
 # -----------------------------
-# 3. Load LLM (TinyLlama)
+# 3. Load LLM (Flan)
 # -----------------------------
-model_name = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
+model_name = "google/flan-t5-small"
 
 tokenizer = AutoTokenizer.from_pretrained(model_name)
-model = AutoModelForCausalLM.from_pretrained(model_name)
+model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
 
 llm = pipeline(
-    "text-generation",
+    "text2text-generation",
     model=model,
     tokenizer=tokenizer,
     max_new_tokens=200,
@@ -90,4 +90,5 @@ def ask(question, k=5):
     context = build_context(chunks)
     answer = generate_answer(question, context)
     return answer
+
 
