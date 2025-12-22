@@ -8,10 +8,11 @@ sentence-transformers==2.2.2
 # Hugging Face model loading
 transformers==4.36.2
 safetensors==0.4.1
-huggingface_hub==0.16.4
+huggingface_hub==0.19.4
 
 # PyTorch CPU (safe for Streamlit Cloud)
 torch>=2.5
+
 
 
 
