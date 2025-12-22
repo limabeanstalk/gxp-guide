@@ -1,20 +1,21 @@
 # rag_pipeline.py
+
 import numpy as np
 import os
 from pymongo import MongoClient
 from sentence_transformers import SentenceTransformer
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
-from sentence_transformers import CrossEncoder
+from sentence_transformers import CrossEncoder   # <-- NEW: import reranker
 
 # -----------------------------
 # 1. Load Embedding Model
 # -----------------------------
 embedder = SentenceTransformer("sentence-transformers/multi-qa-MiniLM-L6-cos-v1")
 
-# ----------------------------- 
-# # 1B. Load Reranker 
-# ----------------------------- 
-reranker = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-6-v2")
+# -----------------------------
+# 1B. Load Reranker (NEW)
+# -----------------------------
+reranker = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-6-v2")   # <-- NEW
 
 # -----------------------------
 # 2. Connect to MongoDB
@@ -42,10 +43,13 @@ llm = pipeline(
 )
 
 # -----------------------------
-# 4. Semantic Search
+# 4. Semantic Search (UPDATED)
 # -----------------------------
 def semantic_search(query, k=5):
-    initial_k = 20
+
+    ### CHANGE: retrieve MORE candidates for reranking
+    initial_k = 20   # <-- NEW: retrieve 20 candidates instead of k
+
     query_emb = embedder.encode(query)
     results = []
 
@@ -56,33 +60,46 @@ def semantic_search(query, k=5):
         results.append((score, doc))
 
     results.sort(key=lambda x: x[0], reverse=True)
-    return [doc for _, doc in results[:initial_k]]
 
-# ----------------------------- 
-# # 4B. Rerank Results
-# ----------------------------- 
+    ### CHANGE: return top 20 for reranking
+    return [doc for _, doc in results[:initial_k]]   # <-- UPDATED
+
+
+# -----------------------------
+# 4B. Rerank Results (NEW)
+# -----------------------------
 def rerank_results(query, docs):
+
+    ### NEW: prepare (query, chunk) pairs for reranker
     pairs = [(query, d["text"]) for d in docs]
-    scores = reranker.predict(pairs) 
-    
+
+    ### NEW: score with cross-encoder
+    scores = reranker.predict(pairs)
+
+    ### NEW: sort by reranker score
     ranked = sorted(
-        zip(docs, scores), 
-        key=lambda x: x[1], 
+        zip(docs, scores),
+        key=lambda x: x[1],
         reverse=True
-    ) 
-     
+    )
+
+    ### NEW: keep top 5 reranked chunks
     top_docs = [doc for doc, score in ranked[:5]]
-     
+
     return top_docs
 
+
 # -----------------------------
-# 5. Build Context
+# 5. Build Context (UPDATED)
 # -----------------------------
 def build_context(chunks):
+
+    ### CHANGE: structured chunk separators for FLAN
     context = ""
-    for i,c in enumerate(chunks):
-        context +=f"+++ CHUNK {i+1} ===\n{c["text"]}\n\n"
+    for i, c in enumerate(chunks):
+        context += f"=== CHUNK {i+1} ===\n{c['text']}\n\n"   # <-- UPDATED
     return context
+
 
 # -----------------------------
 # 6. Generate Answer
@@ -112,12 +129,21 @@ ANSWER:
     output = llm(prompt)[0]["generated_text"]
     return output
 
+
 # -----------------------------
-# 7. Public API for Streamlit
+# 7. Public API for Streamlit (UPDATED)
 # -----------------------------
 def ask(question, k=5):
+
+    ### CHANGE: retrieve initial candidates
     initial_chunks = semantic_search(question, k=k)
+
+    ### NEW: rerank them
     reranked_chunks = rerank_results(question, initial_chunks)
+
+    ### UPDATED: build context from reranked chunks
     context = build_context(reranked_chunks)
+
+    ### unchanged
     answer = generate_answer(question, context)
     return answer
