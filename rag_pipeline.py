@@ -1,6 +1,7 @@
 # rag_pipeline.py
 
 import numpy as np
+import os
 from pymongo import MongoClient
 from sentence_transformers import SentenceTransformer
 from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
@@ -13,9 +14,11 @@ embedder = SentenceTransformer("all-MiniLM-L6-v2")
 # -----------------------------
 # 2. Connect to MongoDB
 # -----------------------------
-client = MongoClient("mongodb://localhost:27017/")
-db = client["ragdb"]
-collection = db["chunks"]
+MONGO_URI = os.getenv("MONGO_URI")
+client = MongoClient(MONGO_URI)
+
+db = client["gxp-guide"]
+collection = db["chunks"] 
 
 # -----------------------------
 # 3. Load LLM (TinyLlama)
@@ -87,3 +90,4 @@ def ask(question, k=5):
     context = build_context(chunks)
     answer = generate_answer(question, context)
     return answer
+
