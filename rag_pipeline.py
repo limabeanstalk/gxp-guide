@@ -47,8 +47,8 @@ llm = pipeline(
 # 4. Semantic Search
 # -----------------------------
 def semantic_search(query, k=5):
-   initial_k = 20
-   query_emb = embedder.encode(query)
+    initial_k = 20
+    query_emb = embedder.encode(query)
     results = []
 
     for doc in collection.find():
@@ -73,9 +73,9 @@ def rerank_results(query, docs):
         reverse=True
      ) 
      
-     top_docs = [doc for doc, score in ranked[:5]]
+    top_docs = [doc for doc, score in ranked[:5]]
      
-     return top_docs
+    return top_docs
 
 # -----------------------------
 # 5. Build Context
