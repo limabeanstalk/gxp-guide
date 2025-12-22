@@ -11,5 +11,6 @@ accelerate==0.25.0
 safetensors==0.4.1
 
 # PyTorch CPU (safe for Streamlit Cloud)
-torch==2.5.1
+torch==2.0.1
+
 
