@@ -26,9 +26,10 @@ llm = pipeline(
     model=model,
     tokenizer=tokenizer,
     max_new_tokens=300,
+    max_length=2048,      
+    truncation=False,
     temperature=0.2,
 )
-
 
 # ---------------------------------------------------------
 # 3. MongoDB Initialization (MATCHES NOTEBOOK)
@@ -96,7 +97,7 @@ Context:
 {context}
 
 Question:
-{question}
+{query}
 
 Answer clearly and cite section numbers when possible.
 """
