@@ -29,7 +29,7 @@ def llm(prompt):
     }
 
     payload = {
-        "model": "llama2-70b-4096",
+        "model": "llama2-13b-4096",
         "messages": [{"role": "user", "content": prompt}],
         "temperature": 0.2,
         "max_tokens": 500
