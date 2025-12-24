@@ -119,7 +119,7 @@ Context:
 Question:
 {question}
 
-If the context includes a section number, cite it once. Do not repeat section numbers.
+Only cite section numbers from section headers. DO not cite section numbers within paragraph bodies unless it is part of the answer.
 """
 
     response = llm(prompt)
