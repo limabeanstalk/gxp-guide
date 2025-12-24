@@ -119,7 +119,10 @@ Context:
 Question:
 {question}
 
-If the context includes a section number relevant to the answer, cite it once. Do not repeat phrases. Keep the answer concise.
+If the context includes a section number relevant to the answer, cite it once.
+Ignore any section numbers that are not relevant to the answer.
+Do not repeat phrases.
+Provide a clear, complete answer.
 """
 
     response = llm(prompt)
