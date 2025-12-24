@@ -120,7 +120,7 @@ Question:
 {question}
 
 If the context contains any section numbers, identify the section number that contains the answer and cite it once at the end of your response in parentheses.
-Ignore any section numbers that do not contain the answer.
+Ignore any section numbers that do not contain the answer. Do not mention irrelevant sections.
 Do not repeat phrases.
 Provide a clear, complete answer.
 """
