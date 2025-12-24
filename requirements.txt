@@ -10,7 +10,7 @@ transformers==4.36.2
 safetensors==0.4.1
 huggingface_hub==0.20.3
 regex
-accelerate
+accelerate==0.21.0
 protobuf
 
 # Force CPU-only torch
