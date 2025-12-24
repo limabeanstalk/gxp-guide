@@ -129,6 +129,8 @@ Question:
 Provide a clear, natural explanation in your own words based on the context.
 Do not copy the context verbatim unless necessary for accuracy.
 Identify the section number that contains the answer and cite it once at the end of your response in parentheses.
+When citing, always include the full CFR section number (e.g., §11.10(a)(2)).
+If the chunk only contains a sub‑bullet (e.g., (a)(2)) and the parent section is missing, do NOT cite it. Instead, say: “Section number not present in context.”
 Do NOT mention or evaluate any other section numbers.
 Do NOT repeat phrases.
 """
