@@ -2,24 +2,19 @@
 
 import numpy as np
 from pymongo import MongoClient
-from sentence_transformers import SentenceTransformer, CrossEncoder
+from sentence_transformers import SentenceTransformer
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
 
 
 # ---------------------------------------------------------
-# 1. Load Embedding Model
+# 1. Load Embedding Model  (MATCHES NOTEBOOK)
 # ---------------------------------------------------------
-embedder = SentenceTransformer("sentence-transformers/multi-qa-MiniLM-L6-cos-v1")
+# Your notebook uses: sentence-transformers/all-MiniLM-L6-v2
+embedder = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
 
 
 # ---------------------------------------------------------
-# 2. Load Reranker
-# ---------------------------------------------------------
-reranker = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-6-v2")
-
-
-# ---------------------------------------------------------
-# 3. Load Flan-T5 LLM
+# 2. Load Flan‑T5 LLM (MATCHES NOTEBOOK)
 # ---------------------------------------------------------
 model_name = "google/flan-t5-base"
 
@@ -30,39 +25,43 @@ llm = pipeline(
     "text2text-generation",
     model=model,
     tokenizer=tokenizer,
-    max_new_tokens=400,
+    max_new_tokens=300,
     temperature=0.2,
 )
 
 
 # ---------------------------------------------------------
-# 4. MongoDB Initialization (called from Streamlit)
+# 3. MongoDB Initialization (MATCHES NOTEBOOK)
 # ---------------------------------------------------------
 def init_mongo(uri):
     client = MongoClient(uri)
-    db = client["gxp-guide"]
-    return db["chunks"]
+    db = client["gxp_guide"]              # <-- NOTEBOOK DB
+    return db["regulatory_chunks"]        # <-- NOTEBOOK COLLECTION
 
 
 # ---------------------------------------------------------
-# 5. Semantic Search (retrieve top 20 candidates)
+# 4. Semantic Search (MATCHES NOTEBOOK)
 # ---------------------------------------------------------
 def semantic_search(query, collection, k=5):
 
-    initial_k = 20
+    initial_k = 20  # retrieve more for reranking
 
-    # Embed and normalize query
-    query_emb = embedder.encode(query, normalize_embeddings=True)
+    # Embed + normalize query (MATCHES NOTEBOOK)
+    query_emb = embedder.encode(
+        query,
+        convert_to_numpy=True,
+        normalize_embeddings=True
+    )
 
     results = []
 
     for doc in collection.find():
         emb = np.array(doc["embedding"], dtype=float)
 
-        # Normalize stored embedding
+        # Normalize stored embedding (MATCHES NOTEBOOK)
         emb = emb / np.linalg.norm(emb)
 
-        # Cosine similarity
+        # Cosine similarity (MATCHES NOTEBOOK)
         score = np.dot(query_emb, emb)
 
         results.append((score, doc))
@@ -70,25 +69,12 @@ def semantic_search(query, collection, k=5):
     # Sort by similarity
     results.sort(key=lambda x: x[0], reverse=True)
 
+    # Return top initial_k
     return [doc for _, doc in results[:initial_k]]
 
-# ---------------------------------------------------------
-# 6. Rerank Results
-# ---------------------------------------------------------
-def rerank_results(query, docs):
-    if not docs:
-        return []
-
-    pairs = [(query, d["text"]) for d in docs]
-    scores = reranker.predict(pairs)
-
-    ranked = sorted(zip(docs, scores), key=lambda x: x[1], reverse=True)
-
-    return [doc for doc, score in ranked[:5]]
-
 
 # ---------------------------------------------------------
-# 7. Build Context
+# 5. Build Context (MATCHES NOTEBOOK)
 # ---------------------------------------------------------
 def build_context(chunks):
     context = ""
@@ -98,38 +84,29 @@ def build_context(chunks):
 
 
 # ---------------------------------------------------------
-# 8. Generate Answer
+# 6. Generate Answer (MATCHES NOTEBOOK)
 # ---------------------------------------------------------
 def generate_answer(question, context):
 
     prompt = f"""
-You are an expert assistant specializing in FDA 21 CFR Part 11 and GxP compliance.
+You are a regulatory assistant. Use ONLY the text in the context below to answer the question. 
+If the answer is not contained in the context, say you cannot find it.
 
-Using ONLY the information provided in the CONTEXT, write a detailed and accurate answer to the QUESTION.
-If the answer is not contained in the context, say: "The context does not contain that information."
-
-Your answer must be:
-- specific
-- complete
-- written in full sentences
-- based strictly on the context
-- not generic or vague
-
-CONTEXT:
+Context:
 {context}
 
-QUESTION:
+Question:
 {question}
 
-ANSWER:
+Answer clearly and cite section numbers when possible.
 """
 
-    output = llm(prompt)[0]["generated_text"]
-    return output
+    response = llm(prompt)[0]["generated_text"]
+    return response
 
 
 # ---------------------------------------------------------
-# 9. Public API for Streamlit
+# 7. Public API for Streamlit (MATCHES NOTEBOOK LOGIC)
 # ---------------------------------------------------------
 def ask(question, collection, k=5):
 
@@ -139,13 +116,10 @@ def ask(question, collection, k=5):
     if not initial_chunks:
         return "No relevant context found in the knowledge base."
 
-    # Step 2: rerank
-    reranked_chunks = rerank_results(question, initial_chunks)
+    # Step 2: build context (no reranker in notebook)
+    context = build_context(initial_chunks[:3])   # top 3 like notebook
 
-    # Step 3: build context
-    context = build_context(reranked_chunks)
-
-    # Step 4: generate answer
+    # Step 3: generate answer
     answer = generate_answer(question, context)
 
     return answer
