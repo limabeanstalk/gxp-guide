@@ -17,5 +17,7 @@ regex
 accelerate
 protobuf
 
-# CPU-compatible torch for Streamlit Cloud
-torch==2.1.0
+# Install torch from official CPU wheel index
+torch==2.1.0+cpu
+--extra-index-url https://download.pytorch.org/whl/cpu
+
