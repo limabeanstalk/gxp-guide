@@ -19,7 +19,7 @@ GROQ_API_KEY = st.secrets["GROQ_API_KEY"]
 embedder = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
 
 # ---------------------------------------------------------
-# 2. Load Gemma LLM
+# 2. Load Llama LLM
 # ---------------------------------------------------------
 def llm(prompt):
     url = "https://api.groq.com/openai/v1/chat/completions"
@@ -29,7 +29,7 @@ def llm(prompt):
     }
 
     payload = {
-        "model": "gemma-7b-it",
+        "model": "llama2-70b-4096",
         "messages": [{"role": "user", "content": prompt}],
         "temperature": 0.2,
         "max_tokens": 500
