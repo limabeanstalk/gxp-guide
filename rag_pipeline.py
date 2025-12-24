@@ -123,7 +123,7 @@ Provide a clear, natural explanation in your own words based on the context.
 Do not copy the context verbatim unless necessary for accuracy.
 Identify the section number that contains the answer and cite it once at the end of your response in parentheses.
 Do NOT mention or evaluate any other section numbers.
-Do NOT repeat phrases.
+Do NOT repeat phrases. Identify the cited text and section with 'Citation'.
 """
 
     response = llm(prompt)
