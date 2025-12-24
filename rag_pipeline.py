@@ -110,9 +110,16 @@ def build_context(chunks):
 def generate_answer(question, context):
 
     prompt = f"""
-Use ONLY the context to answer the question. 
-If the answer is not in the context, say so.
+Answer the question using ONLY the relevant information from the context.
 
+Do NOT:
+- mention irrelevant sections
+- explain what is missing
+- describe what does not apply
+- restate the context
+- add disclaimers
+
+If the answer is not present in the context, respond with: "The context does not contain the answer."
 Context:
 {context}
 
