@@ -12,10 +12,7 @@ transformers==4.36.2
 safetensors==0.4.1
 huggingface_hub==0.19.4
 regex
+accelerateprotobuf
 
-# Let pip choose the correct torch version for Python 3.11
-torch
-
-# Optional but recommended
-accelerate
-protobuf
+# CPU-compatible torch for Streamlit Cloud
+torch==2.1.2
